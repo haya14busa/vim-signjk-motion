@@ -11,7 +11,7 @@ let s:ID_START = 1414141414
 
 let g:signjk#use_upper = get(g:, 'signjk#use_upper', 0)
 let g:signjk#keys = get(g:, 'signjk#keys', 'asdghklqwertyuiopzxcvbnmfj;')
-let g:signjk#dummysign = get(g:, 'dummysign', 1)
+let g:signjk#dummysign = get(g:, 'signjk#dummysign', 1)
 
 let s:V = vital#of('signjk')
 let s:Hint = s:V.import('HitAHint.Hint')

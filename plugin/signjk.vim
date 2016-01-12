@@ -14,8 +14,9 @@ let g:loaded_signjk = 1
 let s:save_cpo = &cpo
 set cpo&vim
 
-noremap <expr> <Plug>(signjk-j) signjk#move(signjk#keys(), 0)
-noremap <expr> <Plug>(signjk-k) signjk#move(signjk#keys(), 1)
+noremap <expr> <Plug>(signjk-j)  signjk#move(signjk#keys(), 0)
+noremap <expr> <Plug>(signjk-k)  signjk#move(signjk#keys(), 1)
+noremap <expr> <Plug>(signjk-jk) signjk#move(signjk#keys(), 2)
 
 augroup plugin-signjk-dummy-sign
   autocmd!

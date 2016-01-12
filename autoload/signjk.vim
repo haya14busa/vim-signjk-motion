@@ -10,7 +10,6 @@ set cpo&vim
 let s:ID_START = 1414141414
 
 let g:signjk#use_upper = get(g:, 'signjk#use_upper', 0)
-let g:signjk#keepcol = get(g:, 'signjk#keepcol', 0)
 let g:signjk#keys = get(g:, 'signjk#keys', 'asdghklqwertyuiopzxcvbnmfj;')
 let g:signjk#dummysign = get(g:, 'dummysign', 1)
 
@@ -67,11 +66,12 @@ endfunction
 function! s:generate_command(target_lnum) abort
   let dlnum = a:target_lnum - line('.')
   let key = dlnum > 0 ? 'j' : 'k'
+  let move = dlnum is# 0 ? '' : abs(dlnum) . key
   let esc = v:count > 0 || !(mode(1) is# 'n')  ? "\<Esc>" : ''
   let op = mode(1) is# 'no' ? '"' . v:register . v:operator
   \ : s:is_visual(mode(1)) ? 'gv'
   \ : ''
-  return esc . 'm`' . op . abs(dlnum) . key
+  return esc . 'm`' . op . move
 endfunction
 
 function! s:select_line(lnums, keys) abort
@@ -102,14 +102,17 @@ endfunction
 
 function! s:getchar(...) abort
   let mode = get(a:, 1, 0)
+  call inputsave()
   while 1
     let char = call('getchar', a:000)
     " Workaround for the <expr> mappings
     if string(char) !~# "\x80\xfd`"
-      return mode == 1 ? !!char
-      \   : type(char) == type(0) ? nr2char(char) : char
+      break
     endif
   endwhile
+  call inputrestore()
+  return mode == 1 ? !!char
+  \   : type(char) == type(0) ? nr2char(char) : char
 endfunction
 
 " @param {{lnum: list<char>}} line_to_hint

@@ -12,6 +12,7 @@ let s:ID_START = 1414141414
 let g:signjk#use_upper = get(g:, 'signjk#use_upper', 0)
 let g:signjk#keepcol = get(g:, 'signjk#keepcol', 0)
 let g:signjk#keys = get(g:, 'signjk#keys', 'asdghklqwertyuiopzxcvbnmfj;')
+let g:signjk#dummysign = get(g:, 'dummysign', 1)
 
 let s:V = vital#of('signjk')
 let s:Hint = s:V.import('HitAHint.Hint')
@@ -23,7 +24,13 @@ function! s:init_hl() abort
   highlight SignjkTarget2 ctermfg=229 guifg=#E6DB74
 endfunction
 
-call s:init_hl()
+function! s:init() abort
+  call s:init_hl()
+  " There is a transparent char after 'text='
+  sign define signjkdummy text=ㅤ texthl=SignColumn
+endfunction
+
+call s:init()
 
 augroup plugin-signjk-highlight
   autocmd!
@@ -32,6 +39,12 @@ augroup END
 
 function! signjk#keys() abort
   return g:signjk#keys
+endfunction
+
+function! signjk#dummysign() abort
+  if g:signjk#dummysign
+    execute printf('sign place %d line=%d name=signjkdummy buffer=%d', s:ID_START, 1, bufnr('%'))
+  endif
 endfunction
 
 function! signjk#move(keys, direction) abort

@@ -17,6 +17,11 @@ set cpo&vim
 noremap <expr> <Plug>(signjk-j) signjk#move(signjk#keys(), 0)
 noremap <expr> <Plug>(signjk-k) signjk#move(signjk#keys(), 1)
 
+augroup plugin-signjk-dummy-sign
+  autocmd!
+  autocmd BufWinEnter * call signjk#dummysign()
+augroup END
+
 let &cpo = s:save_cpo
 unlet s:save_cpo
 " __END__

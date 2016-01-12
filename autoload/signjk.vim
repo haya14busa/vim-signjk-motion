@@ -55,7 +55,14 @@ function! signjk#move(keys, direction) abort
   if a:direction is# s:DIRECTION.backward
     call reverse(lines)
   endif
-  let target_lnum = s:select_line(lines, a:keys)
+  let lines_len = len(lines)
+  if lines_len is# 1
+    let target_lnum = lines[0]
+  elseif lines_len < 1
+    let target_lnum = -1
+  else
+    let target_lnum = s:select_line(lines, a:keys)
+  endif
   if target_lnum is# -1
     return ''
   else
@@ -80,16 +87,17 @@ endfunction
 
 " @param Tree{string: (T|Tree)} hint_dict
 function! s:choose_prompt(hint_dict) abort
-  call s:place_sign(s:line_to_hint(a:hint_dict))
-
-  echo 'Type key: '
-  let c = s:getchar()
-  redraw
-  if g:signjk#use_upper
-    let c = toupper(c)
-  endif
-
-  call s:remove_sign()
+  try
+    call s:place_sign(s:line_to_hint(a:hint_dict))
+    echo 'Type key: '
+    let c = s:getchar()
+    redraw
+    if g:signjk#use_upper
+      let c = toupper(c)
+    endif
+  finally
+    call s:remove_sign()
+  endtry
 
   if has_key(a:hint_dict, c)
     let target = a:hint_dict[c]

@@ -12,3 +12,13 @@ USAGE
 map <Leader>j <Plug>(signjk-j)
 map <Leader>k <Plug>(signjk-k)
 ```
+
+ADVANCED USAGE
+--------------
+
+![](https://raw.githubusercontent.com/haya14busa/i/7b6415c5d5a40b8b389eeadd3374956af7304fff/misc/signjk_textobj_lines.gif)
+
+```vim
+omap L <Plug>(textobj-signjk-lines)
+vmap L <Plug>(textobj-signjk-lines)
+```

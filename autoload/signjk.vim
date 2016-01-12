@@ -55,14 +55,7 @@ function! signjk#move(keys, direction) abort
   if a:direction is# s:DIRECTION.backward
     call reverse(lines)
   endif
-  let lines_len = len(lines)
-  if lines_len is# 1
-    let target_lnum = lines[0]
-  elseif lines_len < 1
-    let target_lnum = -1
-  else
-    let target_lnum = s:select_line(lines, a:keys)
-  endif
+  let target_lnum = s:select_line(lines, a:keys)
   if target_lnum is# -1
     return ''
   else
@@ -82,7 +75,14 @@ function! s:generate_command(target_lnum) abort
 endfunction
 
 function! s:select_line(lnums, keys) abort
-  return s:choose_prompt(s:Hint.create(a:lnums, a:keys))
+  let lines_len = len(a:lnums)
+  if lines_len is# 1
+    return a:lnums[0]
+  elseif lines_len < 1
+    return -1
+  else
+    return s:choose_prompt(s:Hint.create(a:lnums, a:keys))
+  endif
 endfunction
 
 " @param Tree{string: (T|Tree)} hint_dict

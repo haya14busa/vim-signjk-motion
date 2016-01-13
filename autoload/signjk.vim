@@ -57,7 +57,8 @@ function! signjk#move(keys, direction) abort
   endif
   let target_lnum = s:select_line(lines, a:keys)
   if target_lnum is# -1
-    return ''
+    let esc = v:count > 0 || mode(1) is# 'no'  ? "\<Esc>" : ''
+    return esc
   else
     return s:generate_command(target_lnum)
   endif

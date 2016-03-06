@@ -19,8 +19,8 @@ let s:Hint = s:V.import('HitAHint.Hint')
 let s:DIRECTION = {'forward': 0, 'backward': 1, 'both': 2}
 
 function! s:init_hl() abort
-  highlight SignjkTarget  term=standout ctermfg=81 gui=bold guifg=#66D9EF
-  highlight SignjkTarget2 ctermfg=229 guifg=#E6DB74
+  highlight default SignjkTarget  term=standout ctermfg=81 gui=bold guifg=#66D9EF
+  highlight default SignjkTarget2 ctermfg=229 guifg=#E6DB74
 endfunction
 
 function! s:init() abort

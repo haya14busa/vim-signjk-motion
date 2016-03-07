@@ -52,21 +52,23 @@ function! signjk#move(keys, direction) abort
   \   'bufnr': bufnr('%')
   \ }
   let lines = s:gather_lines(a:direction)
+  let visible_lines = s:visible_lines(a:direction)
   if a:direction is# s:DIRECTION.backward
     call reverse(lines)
+    call reverse(visible_lines)
   endif
   let target_lnum = s:select_line(lines, a:keys)
   if target_lnum is# -1
     let esc = v:count > 0 || mode(1) is# 'no'  ? "\<Esc>" : ''
     return esc
   else
-    return s:generate_command(target_lnum)
+    return s:generate_command(a:direction, target_lnum, visible_lines)
   endif
 endfunction
 
-function! s:generate_command(target_lnum) abort
-  let dlnum = a:target_lnum - line('.')
-  let key = dlnum > 0 ? 'j' : 'k'
+function! s:generate_command(direction, target_lnum, lines) abort
+  let dlnum = index(a:lines, a:target_lnum) - index(a:lines, line('.'))
+  let key = a:direction is# s:DIRECTION.backward || dlnum < 0 ? 'k' : 'j'
   let move = dlnum is# 0 ? '' : abs(dlnum) . key
   let esc = v:count > 0 || !(mode(1) is# 'n')  ? "\<Esc>" : ''
   let op = mode(1) is# 'no' ? '"' . v:register . v:operator
@@ -175,18 +177,25 @@ function! s:_line_to_hint(dict, hint_dict, ...) abort
 endfunction
 
 function! s:gather_lines(direction) abort
-  if a:direction is# s:DIRECTION.forward
-    let lines = range(line('.') + 1, line('w$'))
-  elseif a:direction is# s:DIRECTION.backward
-    let lines = range(line('w0'), line('.') - 1)
-  else
-    let lines = range(line('w0'), line('w$'))
-  endif
-  return filter(lines, '!s:is_in_folded(v:val)')
+  return filter(s:_win_lines(a:direction), '!s:is_in_folded(v:val)')
 endfunction
 
 function! s:is_in_folded(lnum) abort
   return foldclosed(a:lnum) != -1
+endfunction
+
+function! s:visible_lines(direction) abort
+  return filter(s:_win_lines(a:direction), '!s:is_in_folded(v:val) || foldclosed(v:val) is# v:val')
+endfunction
+
+function! s:_win_lines(direction) abort
+  if a:direction is# s:DIRECTION.forward
+    return range(line('.') + 1, line('w$'))
+  elseif a:direction is# s:DIRECTION.backward
+    return range(line('w0'), line('.') - 1)
+  else
+    return range(line('w0'), line('w$'))
+  endif
 endfunction
 
 function! s:is_visual(mode) abort

@@ -25,8 +25,7 @@ endfunction
 
 function! s:init() abort
   call s:init_hl()
-  " There is a transparent char after 'text='
-  sign define signjkdummy text=ㅤ texthl=SignColumn
+  sign define signjkdummy
 endfunction
 
 call s:init()
